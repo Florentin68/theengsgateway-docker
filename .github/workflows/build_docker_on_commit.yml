@@ -23,7 +23,10 @@ jobs:
 
       - name: Save variables to disk
         run: |
-          mkdir ~/varz 
+          mkdir ~/varz
+          echo .env
+          echo "line"
+          echo ./.env
           cat $(echo ./.env) | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g' > ~/varz/VERSION
 
       - name: Set ALL variables for this job | à la sauce GitHub Actions
