@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  IMAGE_TAG: "theengs/gateway:test"
+  IMAGE_TAG: "${{ github.repository }}:test"
 
 jobs:
 
