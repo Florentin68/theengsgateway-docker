@@ -2,11 +2,11 @@
 
 |        Arch       |               Docker Image               |
 | ----------------- | ---------------------------------------- |
-| ![aarch64-shield] | Florentin68/theengsgateway-docker-arm64:latest  |
-|  ![amd64-shield]  | Florentin68/theengsgateway-docker-amd64:latest  |
-|  ![armv6-shield]  | Florentin68/theengsgateway-docker-arm-v6:latest |
-|  ![armv7-shield]  | Florentin68/theengsgateway-docker-arm-v7:latest |
-|  ![i386-shield]   | Florentin68/theengsgateway-docker-i386:latest   |
+| ![aarch64-shield] | ![aarch64-docker]  ![aarch64-ghcr]       |
+|  ![amd64-shield]  |  ![amd64-docker]    ![amd64-ghcr]        |
+|  ![armv6-shield]  |  ![armv6-docker]    ![armv6-ghcr]        |
+|  ![armv7-shield]  |  ![armv7-docker]    ![armv7-ghcr]        |
+|  ![i386-shield]   |  ![i386-docker]     ![i386-ghcr]         |
 
 ## So why the Docker Version?
 It happened just so that in my home, somehow Raspberry Pi 3 (where my Home Assistance Instance is hosted) Integrated Bluetooth adapter died and all my BLE sensors are now unavailable. Theengs Gateway seemed like a perfect thing to install on my Raspberry Pi 4 which is used as a media server.
@@ -31,7 +31,7 @@ version: '3.1'
 
 services:
   theengsgateway:
-    image: theengs/gateway-ARCH:latest
+    image: ghcr.io/florentin68/theengsgateway-docker:latest
     network_mode: host
     environment:
       MQTT_HOST: <host_ip>
@@ -64,7 +64,7 @@ services:
       - /var/run/dbus:/var/run/dbus
 ```
 
-*MQTT_HOST* is mandatory field, ofcourse.
+*MQTT_HOST* is mandatory field, ofcourse, unless you provide a config file as a volume.
 *MQTT_USERNAME* and *MQTT_PASSWORD* you use if you require authentication with MQTT Host.
 
 Other variables are not mandatory and you can even leave them out, default values will be used, so you can shorten your docker-compose.yml to this one (if username/password is not used):
@@ -75,13 +75,30 @@ version: '3.1'
 
 services:
   theengsgateway:
-    image: theengs/gateway-ARCH:latest
+    image: ghcr.io/florentin68/theengsgateway-docker:latest
     network_mode: host
     environment:
       MQTT_HOST: <host_ip>
     volumes:
       - /var/run/dbus:/var/run/dbus
 ```
+
+Another way to go is to provide a config file as a volume. No environment variable is then taken into account:
+
+```
+# docker-compose.yml
+version: '3.1'
+
+services:
+  theengsgateway:
+    image: ghcr.io/florentin68/theengsgateway-docker:latest
+    network_mode: host
+    volumes:
+      - /var/run/dbus:/var/run/dbus
+      - theengsgw.conf:/root/theengsgw.conf
+```
+
+The configfile is a json file.
 
 After you have the file created, run `docker-compose up` or `docker compose up`. It will start the process where you can monitor the progress.
 This is not ideal way to run but great for first run and for testing to see what's going on and for checking messages.
@@ -126,7 +143,7 @@ docker run --rm \
     -e BINDKEYS="{\"00:11:22:33:44:55:66\":\"0dc540f3025b474b9ef1085e051b1add\",\"AA:BB:CC:DD:EE:FF\":\"6385424e1b0341109942ad2a6bb42e58\"}" \
     -v /var/run/dbus:/var/run/dbus \
     --name theengsgateway \
-    theengs/gateway-ARCH:latest
+    ghcr.io/florentin68/theengsgateway-docker:latest
 ```
 
 And again, shorten it like this if you wish to use recommended defaults (without user/pass):
@@ -138,7 +155,19 @@ docker run --rm \
     -e MQTT_HOST=<host_ip> \
     -v /var/run/dbus:/var/run/dbus \
     --name gateway \
-    theengs/gateway-ARCH:latest
+    ghcr.io/florentin68/theengsgateway-docker:latest
+```
+
+Or with config file mounted as a volume:
+
+```
+docker run --rm \
+    --network host \
+    --privileged \
+    -v /var/run/dbus:/var/run/dbus \
+    -v theengsgw.conf:/root/theengsgw.conf \
+    --name gateway \
+    ghcr.io/florentin68/theengsgateway-docker:latest
 ```
 
 These commands will run the container in foreground, it's not ideal, but if you wish to see what's happening it's great - for testing.
@@ -146,7 +175,7 @@ If you want to run it in background, add "--detach" between *docker run* and *--
 
 ## Configuration
 
-Once again, MQTT_HOST is the *ONLY* required option, all others can be ommited and defaults will be used.
+Once again, MQTT_HOST is the *ONLY* required option if no config file mounted as a volume, all others can be ommited and defaults will be used.
 If used without MQTT_USERNAME and MQTT_PASSWORD, it will try to login annonymously, otherwise, please provide MQTT_USERNAME and MQTT_PASSWORD too.
 
 As for other configuration options for Theengs Gateway, please review any and all on [Details options](https://gateway.theengs.io/use/use.html#details-options) page on Theengs Gateway official site.
@@ -156,4 +185,14 @@ As for other configuration options for Theengs Gateway, please review any and al
 [armv6-shield]: https://img.shields.io/badge/armv6-yes-green.svg
 [armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
 [i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
-[current-version]: https://img.shields.io/badge/Current%20Version-0.5.0.1-blue
+[current-version]: https://img.shields.io/badge/Current%20Version-1.5.0.1-blue
+[aarch64-docker]: https://img.shields.io/badge/DockerHub-aarch64:latest-blue?logo=docker&logoColor=#2496ED&link=https://hub.docker.com/r/fmunsch/theengsgateway-docker/tags
+[amd64-docker]: https://img.shields.io/badge/DockerHub-amd64:latest-blue?logo=docker&logoColor=#2496ED&link=https://hub.docker.com/r/fmunsch/theengsgateway-docker/tags
+[armv6-docker]: https://img.shields.io/badge/DockerHub-armv6:latest-blue?logo=docker&logoColor=#2496ED&link=https://hub.docker.com/r/fmunsch/theengsgateway-docker/tags
+[armv7-docker]: https://img.shields.io/badge/DockerHub-armv7:latest-blue?logo=docker&logoColor=#2496ED&link=https://hub.docker.com/r/fmunsch/theengsgateway-docker/tags
+[i386-docker]: https://img.shields.io/badge/DockerHub-i386:latest-blue?logo=docker&logoColor=#2496ED&link=https://hub.docker.com/r/fmunsch/theengsgateway-docker/tags
+[aarch64-ghcr]: https://img.shields.io/badge/Github_Container_Registry-aarch64:latest-blue?logo=github&logoColor=#181717&link=https://hub.docker.com/r/fmunsch/theengsgateway-docker/tags
+[amd64-ghcr]: https://img.shields.io/badge/Github_Container_Registry-amd64:latest-blue?logo=github&logoColor=#181717&link=https://hub.docker.com/r/fmunsch/theengsgateway-docker/tags
+[armv6-ghcr]: https://img.shields.io/badge/Github_Container_Registry-armv6:latest-blue?logo=github&logoColor=#181717&link=https://hub.docker.com/r/fmunsch/theengsgateway-docker/tags
+[armv7-ghcr]: https://img.shields.io/badge/Github_Container_Registry-armv7:latest-blue?logo=github&logoColor=#181717&link=https://hub.docker.com/r/fmunsch/theengsgateway-docker/tags
+[i386-ghcr]: https://img.shields.io/badge/Github_Container_Registry-i386:latest-blue?logo=github&logoColor=#181717&link=https://hub.docker.com/r/fmunsch/theengsgateway-docker/tags
