@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       
@@ -42,13 +45,14 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v6
         with:
-          #context: .
+          #context: . # needs a checkout step
           #file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/386,linux/arm/v6,linux/arm/v7
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          load: true
+          #load: true
 
       #- name: Save Docker image
       #  run: docker save --output image.tar "${IMAGE_NAME}:${IMAGE_TAG}"
