@@ -205,7 +205,7 @@ if [ ! -f $CONFIG ]; then
 		"ble": ${BLE:-true},
 		"enable_tls": ${ENABLE_TLS:-false},
 		"enable_websocket": ${ENABLE_WEBSOCKET:-false}
-	EOF
+EOF
 		# Conditionally include IDENTITIES if not empty
 		if [ -n "$IDENTITIES" ]; then
 			echo ",    \"identities\": $IDENTITIES"
