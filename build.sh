@@ -1,7 +1,7 @@
 #!/bin/bash
 
-IMAGENAME=theengsgateway
-REPO=Florentin68
+IMAGENAME=theengsgateway-docker
+REPO=florentin68
 PLATFORMS=(
 	linux/amd64
 	linux/arm64
