@@ -2,11 +2,11 @@
 
 |        Arch       |               Docker Image               |
 | ----------------- | ---------------------------------------- |
-| ![aarch64-shield] | theengs/gateway-arm64:latest  |
-|  ![amd64-shield]  | theengs/gateway-amd64:latest  |
-|  ![armv6-shield]  | theengs/gateway-arm-v6:latest |
-|  ![armv7-shield]  | theengs/gateway-arm-v7:latest |
-|  ![i386-shield]   | theengs/gateway-i386:latest   |
+| ![aarch64-shield] | Florentin68/theengsgateway-docker-arm64:latest  |
+|  ![amd64-shield]  | Florentin68/theengsgateway-docker-amd64:latest  |
+|  ![armv6-shield]  | Florentin68/theengsgateway-docker-arm-v6:latest |
+|  ![armv7-shield]  | Florentin68/theengsgateway-docker-arm-v7:latest |
+|  ![i386-shield]   | Florentin68/theengsgateway-docker-i386:latest   |
 
 ## So why the Docker Version?
 It happened just so that in my home, somehow Raspberry Pi 3 (where my Home Assistance Instance is hosted) Integrated Bluetooth adapter died and all my BLE sensors are now unavailable. Theengs Gateway seemed like a perfect thing to install on my Raspberry Pi 4 which is used as a media server.
